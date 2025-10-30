@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💻 Sistema de Gestión de Laptops V2.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos Base y Tipografía */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif; /* Usando una fuente moderna */
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%); /* Degradado actualizado */
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* Header Mejorado */
+        header {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #4e54c8;
+            font-size: 2.8em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #777;
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+
+        /* Menú Principal (Main Menu) */
+        .main-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .menu-card {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-bottom: 5px solid transparent;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-card i {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .menu-card.prestamo:hover { border-bottom-color: #4e54c8; }
+        .menu-card.devolucion:hover { border-bottom-color: #10b981; }
+        .menu-card.historial:hover { border-bottom-color: #f59e0b; }
+        .menu-card.gestion:hover { border-bottom-color: #ef4444; }
+        
+        /* Colores Específicos para Iconos */
+        .menu-card.prestamo i { color: #4e54c8; }
+        .menu-card.devolucion i { color: #10b981; }
+        .menu-card.historial i { color: #f59e0b; }
+        .menu-card.gestion i { color: #ef4444; }
+
+        .menu-card h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .menu-card p {
+            color: #999;
+            font-size: 1em;
+            font-weight: 300;
+        }
+
+        /* Secciones */
+        .section {
+            display: none;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #4e54c8;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4e54c8;
+            font-size: 2em;
+        }
+
+        /* Formularios y Grupos */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: #f9f9f9;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4e54c8;
+            box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.2);
+            background-color: #ffffff;
+        }
+
+        /* Botones */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-right: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn i {
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            background: #4e54c8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3a42a0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(78, 84, 200, 0.4);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0d9b6e;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #9ca3af;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #6b7280;
+        }
+
+        /* Búsqueda y Filtro */
+        .search-filter {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .search-filter input,
+        .search-filter select {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 25px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        table thead {
+            background: #4e54c8;
+            color: white;
+        }
+
+        table th,
+        table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        table th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        table tbody tr {
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        table tbody tr:hover {
+            background: #eceffd;
+        }
+
+        /* Badges (Etiquetas de Estado) */
+        .badge {
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 18px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert i {
+            font-size: 1.4em;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 5px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 5px solid #ef4444;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 5px solid #3b82f6;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: #ffffff;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #dbeafe;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+        }
+
+        /* Estadísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #4e54c8;
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 3em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Estado Vacío */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #9ca3af;
+            background: #f4f4f4;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .empty-state i {
+            font-size: 4.5em;
+            margin-bottom: 25px;
+            opacity: 0.6;
+        }
+
+        .empty-state h3 {
+            color: #6b7280;
+            margin-bottom: 10px;
+            font-size: 1.6em;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2em;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-laptop-code"></i> Sistema de Gestión de Laptops V2.0</h1>
+            <p>Plataforma centralizada para el control de inventario y préstamos de equipos tecnológicos.</p>
+        </header>
+
+        <div id="mainMenu" class="main-menu">
+            <div class="menu-card prestamo" onclick="showSection('prestamo')">
+                <i class="fas fa-handshake"></i>
+                <h3>Registrar Préstamo</h3>
+                <p>Entrega de equipos a usuarios registrados.</p>
+            </div>
+            <div class="menu-card devolucion" onclick="showSection('devolucion')">
+                <i class="fas fa-rotate-left"></i>
+                <h3>Registrar Devolución</h3>
+                <p>Finalizar el préstamo y verificar el equipo.</p>
+            </div>
+            <div class="menu-card historial" onclick="showSection('historial')">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Historial y Reportes</h3>
+                <p>Consulta de todos los movimientos y datos.</p>
+            </div>
+            <div class="menu-card gestion" onclick="showSection('gestion')">
+                <i class="fas fa-warehouse"></i>
+                <h3>Inventario de Laptops</h3>
+                <p>Alta, baja y modificación de equipos.</p>
+            </div>
+        </div>
+
+        <div id="prestamoSection" class="section">
+            <h2><i class="fas fa-handshake"></i> Registrar Nuevo Préstamo</h2>
+            <div id="prestamoAlert"></div>
+            <form id="prestamoForm">
+                <div class="form-group">
+                    <label for="usuario"><i class="fas fa-user-graduate"></i> Nombre Completo del Usuario</label>
+                    <input type="text" id="usuario" placeholder="Ej: Juan Pérez" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipo_usuario"><i class="fas fa-user-tag"></i> Tipo de Usuario</label>
+                    <select id="tipo_usuario" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Estudiante">Estudiante</option>
+                        <option value="Profesor">Profesor</option>
+                        <option value="Administrativo">Administrativo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="laptop_prestamo"><i class="fas fa-laptop"></i> Laptop Disponible (Serie | Cargador | Marca/Modelo)</label>
+                    <select id="laptop_prestamo" required>
+                        <option value="">Cargando laptops disponibles...</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Confirmar Préstamo</button>
+                <button type="button" class="btn btn-secondary" onclick="showMenu()"><i class="fas fa-arrow-left"></i> Volver al Menú</button>
+            </form>
+        </div>
+
+        <div id="devolucionSection" class="section">
+            <h2><i class="fas fa-rotate-left"></i> Préstamos Activos (Pendientes de Devolución)</h2>
+            <div id="devolucionAlert"></div>
+            <div id="devolucionTable"></div>
+            <button type="button" class="btn btn-secondary" onclick="showMenu()"><i class="fas fa-arrow-left"></i> Volver al Menú</button>
+        </div>
+
+        <div id="historialSection" class="section">
+            <h2><i class="fas fa-chart-bar"></i> Historial Completo de Movimientos</h2>
+            <div class="search-filter">
+                <input type="text" id="busquedaHistorial" placeholder="Buscar por usuario, serie de laptop o cargador...">
+                <select id="filtroTipoHistorial">
+                    <option value="">Todos los Tipos de Usuario</option>
+                    <option value="Estudiante">Estudiante</option>
+                    <option value="Profesor">Profesor</option>
+                    <option value="Administrativo">Administrativo</option>
+                </select>
+            </div>
+            <div id="historialTable"></div>
+            <button type="button" class="btn btn-secondary" onclick="showMenu()"><i class="fas fa-arrow-left"></i> Volver al Menú</button>
+        </div>
+
+        <div id="gestionSection" class="section">
+            <h2><i class="fas fa-warehouse"></i> Gestión de Inventario</h2>
+            <div id="gestionAlert"></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="statTotal">0</h3>
+                    <p>Total Equipos</p>
+                </div>
+                <div class="stat-card" style="background: #10b981;">
+                    <h3 id="statDisponibles">0</h3>
+                    <p>Disponibles</p>
+                </div>
+                <div class="stat-card" style="background: #f59e0b;">
+                    <h3 id="statPrestadas">0</h3>
+                    <p>Prestadas</p>
+                </div>
+            </div>
+
+            <form id="laptopForm">
+                <h3 style="margin-top: 10px; color: #4e54c8;"><i class="fas fa-edit"></i> Registro / Edición de Laptop</h3>
+                <div class="form-group">
+                    <label for="numero_serie"><i class="fas fa-barcode"></i> Número de Serie (Único)</label>
+                    <input type="text" id="numero_serie" required placeholder="Ej: ABC123456">
+                </div>
+                <div class="form-group">
+                    <label for="marca"><i class="fas fa-laptop"></i> Marca</label>
+                    <input type="text" id="marca" required placeholder="Ej: Dell, HP, Lenovo">
+                </div>
+                <div class="form-group">
+                    <label for="modelo"><i class="fas fa-list"></i> Modelo</label>
+                    <input type="text" id="modelo" required placeholder="Ej: Latitude 5400">
+                </div>
+                <div class="form-group">
+                    <label for="numero_serie_bateria"><i class="fas fa-plug"></i> Número de Serie del Cargador</label>
+                    <input type="text" id="numero_serie_bateria" required placeholder="Ej: CHG789">
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitLaptopBtn"><i class="fas fa-plus"></i> Agregar Laptop</button>
+                <button type="button" class="btn btn-danger" id="cancelEditBtn" style="display: none;" onclick="resetLaptopForm()"><i class="fas fa-times"></i> Cancelar Edición</button>
+                <button type="button" class="btn btn-secondary" onclick="showMenu()"><i class="fas fa-arrow-left"></i> Volver al Menú</button>
+            </form>
+
+            <h3 style="margin-top: 40px; color: #333;"><i class="fas fa-clipboard-list"></i> Listado de Inventario</h3>
+            <div class="search-filter">
+                <input type="text" id="busquedaLaptop" placeholder="Buscar por serie, marca, modelo o cargador...">
+                <select id="filtroEstado">
+                    <option value="">Todos los estados</option>
+                    <option value="Disponible">Disponible</option>
+                    <option value="Prestada">Prestada</option>
+                    <option value="Perdida">Perdida</option>
+                    <option value="Dañada">Dañada</option>
+                </select>
+            </div>
+            <div id="laptopsTable"></div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Sistema de Gestión de Préstamos V2.0 | Desarrollado por JD 💪✅👌</p>
+            <p><a href="https://www.facebook.com/share/1M9Hb1qaLp/" target="_blank"><i class="fab fa-facebook-square"></i> Síguenos en Facebook</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let laptops = [];
+        let prestamos = [];
+        let editingLaptopId = null;
+
+        /** Inicialización y persistencia de datos */
+        function init() {
+            loadData();
+            showMenu();
+            updateStats();
+        }
+
+        function loadData() {
+            const storedLaptops = localStorage.getItem('laptops');
+            const storedPrestamos = localStorage.getItem('prestamos');
+            
+            // Si no hay datos, inicializa con datos de ejemplo
+            if (!storedLaptops && !storedPrestamos) {
+                initSampleData();
+            } else {
+                if (storedLaptops) laptops = JSON.parse(storedLaptops);
+                if (storedPrestamos) prestamos = JSON.parse(storedPrestamos);
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('laptops', JSON.stringify(laptops));
+            localStorage.setItem('prestamos', JSON.stringify(prestamos));
+        }
+
+        /** Manejo de Vistas */
+        function showMenu() {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('mainMenu').style.display = 'grid';
+            document.title = '💻 Sistema de Gestión de Laptops V2.0';
+        }
+
+        function showSection(section) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            switch(section) {
+                case 'prestamo':
+                    document.getElementById('prestamoSection').classList.add('active');
+                    document.title = '📝 Registrar Préstamo';
+                    loadAvailableLaptops();
+                    break;
+                case 'devolucion':
+                    document.getElementById('devolucionSection').classList.add('active');
+                    document.title = '↩️ Registrar Devolución';
+                    loadDevolucionTable();
+                    break;
+                case 'historial':
+                    document.getElementById('historialSection').classList.add('active');
+                    document.title = '📋 Historial de Préstamos';
+                    loadHistorialTable();
+                    break;
+                case 'gestion':
+                    document.getElementById('gestionSection').classList.add('active');
+                    document.title = '📦 Inventario de Laptops';
+                    resetLaptopForm(); // Asegura que el formulario de gestión esté limpio
+                    loadLaptopsTable();
+                    updateStats();
+                    break;
+            }
+        }
+
+        /** Lógica de Gestión de Laptops */
+        document.getElementById('laptopForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const numero_serie_input = document.getElementById('numero_serie');
+            const numero_serie = numero_serie_input.value;
+            const marca = document.getElementById('marca').value;
+            const modelo = document.getElementById('modelo').value;
+            const numero_serie_cargador = document.getElementById('numero_serie_bateria').value;
+            
+            if (editingLaptopId) {
+                const index = laptops.findIndex(l => l.id === editingLaptopId);
+                
+                // Verificar que el nuevo número de serie no colisione con otro equipo
+                const existeOtra = laptops.find(l => l.numero_serie === numero_serie && l.id !== editingLaptopId);
+                if (existeOtra) {
+                    showAlert('gestionAlert', 'Error: El número de serie ya está asignado a otra laptop.', 'error');
+                    return;
+                }
+                
+                laptops[index].numero_serie = numero_serie;
+                laptops[index].marca = marca;
+                laptops[index].modelo = modelo;
+                laptops[index].numero_serie_bateria = numero_serie_cargador;
+                
+                showAlert('gestionAlert', 'Laptop actualizada correctamente', 'success');
+            } else {
+                // Agregar nueva laptop
+                const existe = laptops.find(l => l.numero_serie === numero_serie);
+                if (existe) {
+                    showAlert('gestionAlert', 'Error: El número de serie ya está registrado.', 'error');
+                    return;
+                }
+                
+                const newLaptop = {
+                    id: Date.now(),
+                    numero_serie: numero_serie,
+                    marca: marca,
+                    modelo: modelo,
+                    numero_serie_bateria: numero_serie_cargador,
+                    estado: 'Disponible'
+                };
+                laptops.push(newLaptop);
+                showAlert('gestionAlert', 'Laptop agregada correctamente', 'success');
+            }
+            
+            saveData();
+            resetLaptopForm();
+            loadLaptopsTable();
+            updateStats();
+        });
+
+        function resetLaptopForm() {
+            document.getElementById('laptopForm').reset();
+            document.getElementById('numero_serie').disabled = false;
+            document.getElementById('submitLaptopBtn').innerHTML = '<i class="fas fa-plus"></i> Agregar Laptop';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            editingLaptopId = null;
+        }
+
+        function editLaptop(id) {
+            const laptop = laptops.find(l => l.id === id);
+            if (!laptop) return;
+            
+            document.getElementById('numero_serie').value = laptop.numero_serie;
+            document.getElementById('marca').value = laptop.marca;
+            document.getElementById('modelo').value = laptop.modelo;
+            document.getElementById('numero_serie_bateria').value = laptop.numero_serie_bateria;
+            
+            editingLaptopId = id;
+            
+            // Deshabilitar edición de serie si está prestada para evitar inconsistencias
+            document.getElementById('numero_serie').disabled = (laptop.estado === 'Prestada');
+
+            document.getElementById('submitLaptopBtn').innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+            document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showAlert('gestionAlert', `Editando laptop ${laptop.numero_serie}. Modifica los campos y guarda.`, 'info');
+        }
+
+        function deleteLaptop(id) {
+            const laptop = laptops.find(l => l.id === id);
+            
+            if (laptop.estado === 'Prestada') {
+                if (!confirm(`La laptop ${laptop.numero_serie} está PRESTADA. ¿Estás seguro de eliminarla? Esto también borrará los registros de préstamo asociados.`)) {
+                    return;
+                }
+            } else {
+                if (!confirm(`¿Estás seguro de eliminar la laptop ${laptop.numero_serie}?`)) {
+                    return;
+                }
+            }
+            
+            laptops = laptops.filter(l => l.id !== id);
+            prestamos = prestamos.filter(p => p.id_laptop !== id); // Elimina préstamos relacionados
+            
+            saveData();
+            showAlert('gestionAlert', 'Laptop eliminada correctamente', 'success');
+            loadLaptopsTable();
+            updateStats();
+        }
+        
+        /** Lógica de Préstamos */
+        document.getElementById('prestamoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const usuario = document.getElementById('usuario').value.trim();
+            const tipo_usuario = document.getElementById('tipo_usuario').value;
+            const id_laptop = parseInt(document.getElementById('laptop_prestamo').value);
+            
+            if (!usuario || !tipo_usuario || isNaN(id_laptop)) {
+                showAlert('prestamoAlert', 'Error: Por favor, complete todos los campos.', 'error');
+                return;
+            }
+
+            const laptop = laptops.find(l => l.id === id_laptop);
+            
+            if (!laptop || laptop.estado !== 'Disponible') {
+                showAlert('prestamoAlert', 'Error: La laptop no está disponible para préstamo.', 'error');
+                return;
+            }
+            
+            const prestamo = {
+                id: Date.now(),
+                usuario: usuario,
+                tipo_usuario: tipo_usuario,
+                id_laptop: id_laptop,
+                fecha_prestamo: new Date().toISOString(),
+                fecha_devolucion: null,
+                numero_serie_cargador_prestado: laptop.numero_serie_bateria // Registrar el cargador en el momento del préstamo
+            };
+            
+            prestamos.push(prestamo);
+            laptop.estado = 'Prestada';
+            
+            saveData();
+            showAlert('prestamoAlert', `Préstamo de ${laptop.numero_serie} a ${usuario} registrado.`, 'success');
+            this.reset();
+            loadAvailableLaptops(); // Recargar la lista de disponibles
+            updateStats();
+        });
+
+        /** Lógica de Devoluciones */
+        function registrarDevolucion(prestamoId) {
+            const prestamo = prestamos.find(p => p.id === prestamoId);
+            if (!prestamo) {
+                showAlert('devolucionAlert', 'Préstamo no encontrado', 'error');
+                return;
+            }
+            
+            const laptop = laptops.find(l => l.id === prestamo.id_laptop);
+            
+            const cargadorDevuelto = prompt(`Confirmar devolución de la laptop: ${laptop.numero_serie}.\n\nPor favor, ingresa el número de serie del cargador devuelto (Original: ${prestamo.numero_serie_cargador_prestado}):`);
+            
+            if (cargadorDevuelto === null) {
+                return; // Cancelado
+            }
+
+            // Simple validación del cargador
+            if (cargadorDevuelto.trim() !== prestamo.numero_serie_cargador_prestado.trim()) {
+                 if (!confirm(`Advertencia: El cargador devuelto (${cargadorDevuelto.trim()}) NO coincide con el cargador prestado (${prestamo.numero_serie_cargador_prestado}).\n\n¿Proceder con la devolución aun así?`)) {
+                    return;
+                }
+            }
+
+            // Opcional: Preguntar por el estado de la laptop devuelta
+            const estadoDevuelto = prompt(`Ingresa el estado de la laptop ${laptop.numero_serie} al devolverla:\n\n1: Disponible\n2: Dañada\n3: Perdida/Desconocida`, '1');
+
+            let nuevoEstado = 'Disponible';
+            if (estadoDevuelto === '2') nuevoEstado = 'Dañada';
+            if (estadoDevuelto === '3') nuevoEstado = 'Perdida';
+            
+            prestamo.fecha_devolucion = new Date().toISOString();
+            
+            if (laptop) {
+                laptop.estado = nuevoEstado; // Actualiza el estado de la laptop
+                laptop.numero_serie_bateria = cargadorDevuelto.trim(); // Actualiza el cargador en el inventario
+            }
+            
+            saveData();
+            showAlert('devolucionAlert', `Devolución de ${laptop.numero_serie} registrada. Nuevo estado: ${nuevoEstado}.`, 'success');
+            loadDevolucionTable(); // Recargar la tabla de préstamos activos
+            updateStats();
+        }
+
+        /** Funciones de Carga de Tablas y Filtros */
+        
+        function loadAvailableLaptops() {
+            const select = document.getElementById('laptop_prestamo');
+            select.innerHTML = '<option value="">Seleccione una laptop disponible</option>';
+            
+            const available = laptops.filter(l => l.estado === 'Disponible');
+
+            if (available.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = '¡No hay laptops disponibles!';
+                option.disabled = true;
+                select.appendChild(option);
+            }
+
+            available.sort((a, b) => a.numero_serie.localeCompare(b.numero_serie)).forEach(laptop => {
+                const option = document.createElement('option');
+                option.value = laptop.id;
+                option.textContent = `Serie: ${laptop.numero_serie} | Cargador: ${laptop.numero_serie_bateria} | ${laptop.marca} ${laptop.modelo}`;
+                select.appendChild(option);
+            });
+        }
+        
+        function loadLaptopsTable() {
+            const table = document.getElementById('laptopsTable');
+            
+            if (laptops.length === 0) {
+                table.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h3>Inventario Vacío</h3>
+                        <p>Agrega tu primer equipo en el formulario de arriba.</p>
+                    </div>`;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-barcode"></i> Serie</th>
+                            <th><i class="fas fa-laptop"></i> Equipo</th>
+                            <th><i class="fas fa-plug"></i> Cargador (Serie)</th>
+                            <th><i class="fas fa-info-circle"></i> Estado</th>
+                            <th><i class="fas fa-cogs"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="laptopsTableBody">`;
+            
+            laptops.slice().sort((a, b) => a.numero_serie.localeCompare(b.numero_serie)).forEach(laptop => {
+                const badgeClass = 
+                    laptop.estado === 'Disponible' ? 'badge-success' :
+                    laptop.estado === 'Prestada' ? 'badge-warning' :
+                    laptop.estado === 'Perdida' ? 'badge-danger' : 'badge-secondary';
+                
+                html += `
+                    <tr>
+                        <td>${laptop.numero_serie}</td>
+                        <td>${laptop.marca} ${laptop.modelo}</td>
+                        <td>${laptop.numero_serie_bateria}</td>
+                        <td><span class="badge ${badgeClass}">${laptop.estado}</span></td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editLaptop(${laptop.id})"><i class="fas fa-edit"></i> Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteLaptop(${laptop.id})"><i class="fas fa-trash"></i> Eliminar</button>
+                        </td>
+                    </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            table.innerHTML = html;
+            
+            setupLaptopFilters();
+        }
+
+        function setupLaptopFilters() {
+            const busqueda = document.getElementById('busquedaLaptop');
+            const filtro = document.getElementById('filtroEstado');
+            
+            function filter() {
+                const texto = busqueda.value.toLowerCase();
+                const estado = filtro.value;
+                const rows = document.querySelectorAll('#laptopsTableBody tr');
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let match = false;
+                    
+                    // Buscar en serie (0), equipo (1) y cargador (2)
+                    for (let i = 0; i <= 2; i++) { 
+                        if (cells[i] && cells[i].textContent.toLowerCase().includes(texto)) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    
+                    const estadoCell = cells[3].textContent.trim(); // Estado está en la columna 3
+                    const estadoMatch = !estado || estadoCell.includes(estado);
+                    
+                    row.style.display = (match && estadoMatch) ? '' : 'none';
+                });
+            }
+            
+            busqueda.addEventListener('input', filter);
+            filtro.addEventListener('change', filter);
+        }
+
+        function loadDevolucionTable() {
+            const container = document.getElementById('devolucionTable');
+            const prestamosActivos = prestamos.filter(p => !p.fecha_devolucion);
+            
+            if (prestamosActivos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-thumbs-up"></i>
+                        <h3>¡No hay préstamos pendientes!</h3>
+                        <p>Todas las laptops han sido devueltas y registradas.</p>
+                    </div>`;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user-graduate"></i> Usuario</th>
+                            <th><i class="fas fa-user-tag"></i> Tipo</th>
+                            <th><i class="fas fa-barcode"></i> Serie Laptop</th>
+                            <th><i class="fas fa-plug"></i> Serie Cargador Pr.</th>
+                            <th><i class="fas fa-calendar"></i> Fecha Préstamo</th>
+                            <th><i class="fas fa-cogs"></i> Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            prestamosActivos.slice().sort((a, b) => new Date(a.fecha_prestamo) - new Date(b.fecha_prestamo)).forEach(prestamo => {
+                const laptop = laptops.find(l => l.id === prestamo.id_laptop);
+                if (laptop) {
+                    html += `
+                        <tr>
+                            <td>${prestamo.usuario}</td>
+                            <td>${prestamo.tipo_usuario}</td>
+                            <td>${laptop.numero_serie}</td>
+                            <td>${prestamo.numero_serie_cargador_prestado}</td>
+                            <td>${new Date(prestamo.fecha_prestamo).toLocaleString()}</td>
+                            <td>
+                                <button class="btn btn-success" onclick="registrarDevolucion(${prestamo.id})">
+                                    <i class="fas fa-check"></i> Devolver
+                                </button>
+                            </td>
+                        </tr>`;
+                }
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function loadHistorialTable() {
+            const container = document.getElementById('historialTable');
+            
+            if (prestamos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h3>Historial Vacío</h3>
+                        <p>Aún no se han registrado préstamos en el sistema.</p>
+                    </div>`;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th><i class="fas fa-user-graduate"></i> Usuario</th>
+                            <th><i class="fas fa-user-tag"></i> Tipo</th>
+                            <th><i class="fas fa-barcode"></i> Serie Laptop</th>
+                            <th><i class="fas fa-plug"></i> Cargador Pr.</th>
+                            <th><i class="fas fa-calendar-plus"></i> F. Préstamo</th>
+                            <th><i class="fas fa-calendar-check"></i> F. Devolución</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historialTableBody">`;
+            
+            // Mostrar los más recientes primero
+            prestamos.slice().sort((a, b) => b.id - a.id).forEach(prestamo => {
+                const laptop = laptops.find(l => l.id === prestamo.id_laptop);
+                // Si la laptop fue eliminada, aún mostrar el registro de préstamo con la información estática
+                const serieLaptop = laptop ? laptop.numero_serie : `[Eliminada: ${prestamo.id_laptop}]`;
+                
+                html += `
+                    <tr>
+                        <td>${prestamo.id}</td>
+                        <td>${prestamo.usuario}</td>
+                        <td>${prestamo.tipo_usuario}</td>
+                        <td>${serieLaptop}</td>
+                        <td>${prestamo.numero_serie_cargador_prestado || 'N/A'}</td>
+                        <td>${new Date(prestamo.fecha_prestamo).toLocaleString()}</td>
+                        <td>${prestamo.fecha_devolucion ? new Date(prestamo.fecha_devolucion).toLocaleString() : '<span class="badge badge-warning">ACTIVO</span>'}</td>
+                    </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            
+            setupHistorialFilters();
+        }
+
+        function setupHistorialFilters() {
+            const busqueda = document.getElementById('busquedaHistorial');
+            const filtro = document.getElementById('filtroTipoHistorial');
+            
+            function filter() {
+                const texto = busqueda.value.toLowerCase();
+                const tipo = filtro.value;
+                const rows = document.querySelectorAll('#historialTableBody tr');
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let match = false;
+                    
+                    // Buscar en Usuario (1), Serie Laptop (3), Cargador (4)
+                    const searchableCells = [cells[1], cells[3], cells[4]];
+                    for (const cell of searchableCells) {
+                        if (cell && cell.textContent.toLowerCase().includes(texto)) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    
+                    const tipoCell = cells[2].textContent.trim(); // Tipo de Usuario está en la columna 2
+                    const tipoMatch = !tipo || tipoCell === tipo;
+                    
+                    row.style.display = (match && tipoMatch) ? '' : 'none';
+                });
+            }
+            
+            busqueda.addEventListener('input', filter);
+            filtro.addEventListener('change', filter);
+        }
+        
+        /** Utilidades */
+        function updateStats() {
+            const total = laptops.length;
+            const disponibles = laptops.filter(l => l.estado === 'Disponible').length;
+            const prestadas = laptops.filter(l => l.estado === 'Prestada').length;
+            
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statDisponibles').textContent = disponibles;
+            document.getElementById('statPrestadas').textContent = prestadas;
+        }
+
+        function showAlert(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-error' : 'alert-info';
+            const iconClass = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle';
+            
+            container.innerHTML = `<div class="alert ${alertClass}">
+                <i class="fas fa-${iconClass}"></i>
+                <span>${message}</span>
+            </div>`;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Datos de ejemplo para iniciar el sistema si está vacío
+        function initSampleData() {
+            laptops = [
+                { id: 101, numero_serie: 'LPNV001', marca: 'Lenovo', modelo: 'ThinkPad T490', numero_serie_bateria: 'CHG490A', estado: 'Disponible' },
+                { id: 102, numero_serie: 'LPHS002', marca: 'HP', modelo: 'Spectre x360', numero_serie_bateria: 'CHG360B', estado: 'Disponible' },
+                { id: 103, numero_serie: 'LPDE003', marca: 'Dell', modelo: 'Latitude 5400', numero_serie_bateria: 'CHG540C', estado: 'Prestada' },
+                { id: 104, numero_serie: 'LPMS004', marca: 'Microsoft', modelo: 'Surface 4', numero_serie_bateria: 'CHGSRD', estado: 'Disponible' },
+                { id: 105, numero_serie: 'LPAS005', numero_serie: 'LPAS005', marca: 'Asus', modelo: 'ROG Zephyrus', numero_serie_bateria: 'CHGZPHR', estado: 'Dañada' }
+            ];
+            
+            prestamos = [
+                { id: 1000, usuario: 'Laura Gómez', tipo_usuario: 'Estudiante', id_laptop: 103, fecha_prestamo: new Date(Date.now() - 86400000).toISOString(), fecha_devolucion: null, numero_serie_cargador_prestado: 'CHG540C' },
+                { id: 1001, usuario: 'Dr. Manuel Torres', tipo_usuario: 'Profesor', id_laptop: 102, fecha_prestamo: new Date(Date.now() - 172800000).toISOString(), fecha_devolucion: new Date(Date.now() - 43200000).toISOString(), numero_serie_cargador_prestado: 'CHG360B' }
+            ];
+            saveData();
+        }
+
+        // Inicializar cuando carga la página
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
